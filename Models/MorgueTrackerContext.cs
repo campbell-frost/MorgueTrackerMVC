@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MorgueTrackerMVC.Models;
-using System.Collections.Generic;
-using System.Reflection.Emit;
 
 public class MorgueTrackerContext : DbContext
 {
@@ -15,20 +13,16 @@ public class MorgueTrackerContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Configure relationships and any other model configurations here
         modelBuilder.Entity<Release>()
-            .HasOne(r => r.Patient)
-            .WithMany(p => p.Releases)
+            .HasOne(r => r.Patient)  // Configure the relationship with Patient
+            .WithMany()
             .HasForeignKey(r => r.PatientID);
 
         modelBuilder.Entity<Release>()
-            .HasOne(r => r.InEmployee)
-            .WithMany(e => e.InReleases)
-            .HasForeignKey(r => r.InEmployeeID);
-
-        modelBuilder.Entity<Release>()
-            .HasOne(r => r.OutEmployee)
-            .WithMany(e => e.OutReleases)
+            .HasOne(r => r.OutEmployee)  // Configure the relationship with Employee for OutEmployee
+            .WithMany()
             .HasForeignKey(r => r.OutEmployeeID);
+
+        base.OnModelCreating(modelBuilder);
     }
 }
