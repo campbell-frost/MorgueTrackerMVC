@@ -30,11 +30,6 @@ namespace MorgueTrackerMVC.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployeeID"));
 
                     b.Property<string>("EmployeeName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("EmployeeID");
@@ -107,7 +102,7 @@ namespace MorgueTrackerMVC.Migrations
                     b.HasOne("MorgueTrackerMVC.Models.Employee", "InEmployee")
                         .WithMany()
                         .HasForeignKey("InEmployeeID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("InEmployee");
@@ -118,13 +113,13 @@ namespace MorgueTrackerMVC.Migrations
                     b.HasOne("MorgueTrackerMVC.Models.Employee", "OutEmployee")
                         .WithMany()
                         .HasForeignKey("OutEmployeeID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("MorgueTrackerMVC.Models.Patient", "Patient")
                         .WithMany()
                         .HasForeignKey("PatientID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("OutEmployee");

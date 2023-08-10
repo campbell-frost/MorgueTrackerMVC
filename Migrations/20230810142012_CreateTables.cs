@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MorgueTrackerMVC.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class CreateTables : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,14 +30,20 @@ namespace MorgueTrackerMVC.Migrations
                 {
                     PatientID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PatientName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LocationInMorgue = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PatientName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    InEmployeeID = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PickedUpDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    LocationInMorgue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Patients", x => x.PatientID);
+                    table.ForeignKey(
+                        name: "FK_Patients_Employees_InEmployeeID",
+                        column: x => x.InEmployeeID,
+                        principalTable: "Employees",
+                        principalColumn: "EmployeeID",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -46,40 +52,32 @@ namespace MorgueTrackerMVC.Migrations
                 {
                     ReleaseID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PatientID = table.Column<int>(type: "int", nullable: false),
+                    OutEmployeeID = table.Column<int>(type: "int", nullable: false),
                     FuneralHome = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FuneralHomeEmployee = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PickedUpDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PatientID = table.Column<int>(type: "int", nullable: false),
-                    InEmployeeID = table.Column<int>(type: "int", nullable: false),
-                    OutEmployeeID = table.Column<int>(type: "int", nullable: false)
+                    PickedUpDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Releases", x => x.ReleaseID);
                     table.ForeignKey(
-                        name: "FK_Releases_Employees_InEmployeeID",
-                        column: x => x.InEmployeeID,
-                        principalTable: "Employees",
-                        principalColumn: "EmployeeID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Releases_Employees_OutEmployeeID",
                         column: x => x.OutEmployeeID,
                         principalTable: "Employees",
                         principalColumn: "EmployeeID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Releases_Patients_PatientID",
                         column: x => x.PatientID,
                         principalTable: "Patients",
                         principalColumn: "PatientID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Releases_InEmployeeID",
-                table: "Releases",
+                name: "IX_Patients_InEmployeeID",
+                table: "Patients",
                 column: "InEmployeeID");
 
             migrationBuilder.CreateIndex(
@@ -100,10 +98,10 @@ namespace MorgueTrackerMVC.Migrations
                 name: "Releases");
 
             migrationBuilder.DropTable(
-                name: "Employees");
+                name: "Patients");
 
             migrationBuilder.DropTable(
-                name: "Patients");
+                name: "Employees");
         }
     }
 }

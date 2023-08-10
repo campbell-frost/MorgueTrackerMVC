@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MorgueTrackerMVC.Migrations
 {
     [DbContext(typeof(MorgueTrackerContext))]
-    [Migration("20230809212022_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230810142012_CreateTables")]
+    partial class CreateTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -51,16 +51,19 @@ namespace MorgueTrackerMVC.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("InEmployeeID")
+                        .HasColumnType("int");
+
                     b.Property<string>("LocationInMorgue")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PatientName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("PickedUpDate")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("PatientID");
+
+                    b.HasIndex("InEmployeeID");
 
                     b.ToTable("Patients");
                 });
@@ -73,17 +76,11 @@ namespace MorgueTrackerMVC.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReleaseID"));
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("FuneralHome")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FuneralHomeEmployee")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("InEmployeeID")
-                        .HasColumnType("int");
 
                     b.Property<int>("OutEmployeeID")
                         .HasColumnType("int");
@@ -96,8 +93,6 @@ namespace MorgueTrackerMVC.Migrations
 
                     b.HasKey("ReleaseID");
 
-                    b.HasIndex("InEmployeeID");
-
                     b.HasIndex("OutEmployeeID");
 
                     b.HasIndex("PatientID");
@@ -105,43 +100,34 @@ namespace MorgueTrackerMVC.Migrations
                     b.ToTable("Releases");
                 });
 
-            modelBuilder.Entity("MorgueTrackerMVC.Models.Release", b =>
+            modelBuilder.Entity("MorgueTrackerMVC.Models.Patient", b =>
                 {
                     b.HasOne("MorgueTrackerMVC.Models.Employee", "InEmployee")
-                        .WithMany("InReleases")
+                        .WithMany()
                         .HasForeignKey("InEmployeeID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MorgueTrackerMVC.Models.Employee", "OutEmployee")
-                        .WithMany("OutReleases")
-                        .HasForeignKey("OutEmployeeID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MorgueTrackerMVC.Models.Patient", "Patient")
-                        .WithMany("Releases")
-                        .HasForeignKey("PatientID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("InEmployee");
+                });
+
+            modelBuilder.Entity("MorgueTrackerMVC.Models.Release", b =>
+                {
+                    b.HasOne("MorgueTrackerMVC.Models.Employee", "OutEmployee")
+                        .WithMany()
+                        .HasForeignKey("OutEmployeeID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MorgueTrackerMVC.Models.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("OutEmployee");
 
                     b.Navigation("Patient");
-                });
-
-            modelBuilder.Entity("MorgueTrackerMVC.Models.Employee", b =>
-                {
-                    b.Navigation("InReleases");
-
-                    b.Navigation("OutReleases");
-                });
-
-            modelBuilder.Entity("MorgueTrackerMVC.Models.Patient", b =>
-                {
-                    b.Navigation("Releases");
                 });
 #pragma warning restore 612, 618
         }
