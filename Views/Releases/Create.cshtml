@@ -1,0 +1,51 @@
+﻿@model MorgueTrackerMVC.Models.Release
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Release</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="PatientID" class="control-label"></label>
+                <select asp-for="PatientID" class ="form-control" asp-items="ViewBag.PatientID"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="OutEmployeeID" class="control-label"></label>
+                <select asp-for="OutEmployeeID" class ="form-control" asp-items="ViewBag.OutEmployeeID"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="FuneralHome" class="control-label"></label>
+                <input asp-for="FuneralHome" class="form-control" />
+                <span asp-validation-for="FuneralHome" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FuneralHomeEmployee" class="control-label"></label>
+                <input asp-for="FuneralHomeEmployee" class="form-control" />
+                <span asp-validation-for="FuneralHomeEmployee" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PickedUpDate" class="control-label"></label>
+                <input asp-for="PickedUpDate" class="form-control" />
+                <span asp-validation-for="PickedUpDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
